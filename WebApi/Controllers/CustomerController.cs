@@ -2,7 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApi.Models;
+using WebApi.Bussiness.Services.Interfaces;
+using WebApi.Data.Entities;
 
 namespace WebApi.Controllers
 {
@@ -10,49 +11,60 @@ namespace WebApi.Controllers
     [Route("[controller]")]
     public class CustomerController : Controller
     {
-        WebApi_DBContext _context;
+        ICustomerService _customerService;
 
-        public CustomerController(WebApi_DBContext context)
+        public CustomerController(ICustomerService customerService)
         {
-            _context = context;
+            _customerService = customerService;
         }
 
         [HttpGet]
         public IActionResult GetAllCustomer()
         {
-            return new ObjectResult(_context.Customers);
+            return new ObjectResult(_customerService.GetAllCustomer());
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCustomerById([FromRoute] int id)
+        public IActionResult GetCustomerById([FromRoute] int id)
         {
-            var customer = await _context.Customers.SingleOrDefaultAsync(c => c.CustomerId == id);
-            return Ok(customer);
+            if (_customerService.ExistCustomer(id))
+                return Ok(_customerService.GetCustomerById(id));
+            else
+                return NotFound();
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostCustomer([FromBody] Customer customer)
+        public IActionResult PostCustomer([FromBody] Customer customer)
         {
-            _context.Customers.Add(customer);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction("GetCustomerById", new { id = customer.CustomerId }, customer);
+            if (ModelState.IsValid)
+            {
+                _customerService.InsertCustomer(customer);
+                return CreatedAtAction("GetCustomerById", new { id = customer.CustomerId }, customer);
+            }
+            return BadRequest();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer([FromRoute] int id,[FromBody] Customer customer)
+        public IActionResult PutCustomer([FromRoute] int id,[FromBody] Customer customer)
         {
-            _context.Entry(customer).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return Ok(customer);
+            if (ModelState.IsValid)
+            {
+                _customerService.UpdateCustomer(customer);
+                return Ok(customer);
+            }
+            return BadRequest();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomer([FromRoute] int id)
+        public IActionResult DeleteCustomer([FromRoute] int id)
         {
-            var customer = await _context.Customers.FindAsync(id);
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
-            return Ok();
+            if (_customerService.ExistCustomer(id))
+            {
+                _customerService.DeleteCustomer(id);
+                return Ok();
+            }
+            else
+                return NotFound();       
         }
     }
 }

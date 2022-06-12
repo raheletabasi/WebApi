@@ -1,10 +1,11 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using WebApi.Data.Entities;
 
 #nullable disable
 
-namespace WebApi.Models
+namespace WebApi.Data.Context
 {
     public partial class WebApi_DBContext : DbContext
     {

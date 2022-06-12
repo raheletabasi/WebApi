@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace WebApi.Models
+namespace WebApi.Data.Entities
 {
-    public partial class SalesPerson
+    public partial class Customer
     {
-        public int SalesPersonId { get; set; }
+        public int CustomerId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

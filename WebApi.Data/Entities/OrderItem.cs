@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace WebApi.Models
-{
+namespace WebApi.Data.Entities
+{ 
     public partial class OrderItem
     {
         public int OrderItemId { get; set; }

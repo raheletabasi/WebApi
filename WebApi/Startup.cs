@@ -11,7 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApi.Models;
+using WebApi.Bussiness.Services;
+using WebApi.Bussiness.Services.Interfaces;
+using WebApi.Data.Context;
 
 namespace WebApi
 {
@@ -39,6 +41,11 @@ namespace WebApi
                 option.UseSqlServer(Configuration.GetConnectionString("WebApiConnectionString"));
             });
             #endregion
+
+            #region IOC
+            services.AddTransient<ICustomerService, CustomerService>();
+            #endregion
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
