@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace WebApi.Models
+namespace WebApi.Data.Entities
 {
     public partial class Order
     {
