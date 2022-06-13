@@ -19,48 +19,48 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllCustomer()
+        public async Task<IActionResult> GetAllCustomer()
         {
             return new ObjectResult(_customerService.GetAllCustomer());
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetCustomerById([FromRoute] int id)
+        public async Task<IActionResult> GetCustomerById([FromRoute] int id)
         {
-            if (_customerService.ExistCustomer(id))
+            if (await _customerService.ExistCustomer(id))
                 return Ok(_customerService.GetCustomerById(id));
             else
                 return NotFound();
         }
 
         [HttpPost]
-        public IActionResult PostCustomer([FromBody] Customer customer)
+        public async Task<IActionResult> PostCustomer([FromBody] Customer customer)
         {
             if (ModelState.IsValid)
             {
-                _customerService.InsertCustomer(customer);
+                await _customerService.InsertCustomer(customer);
                 return CreatedAtAction("GetCustomerById", new { id = customer.CustomerId }, customer);
             }
             return BadRequest();
         }
 
         [HttpPut("{id}")]
-        public IActionResult PutCustomer([FromRoute] int id,[FromBody] Customer customer)
+        public async Task<IActionResult> PutCustomer([FromRoute] int id,[FromBody] Customer customer)
         {
             if (ModelState.IsValid)
             {
-                _customerService.UpdateCustomer(customer);
+                await _customerService.UpdateCustomer(customer);
                 return Ok(customer);
             }
             return BadRequest();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteCustomer([FromRoute] int id)
+        public async Task<IActionResult> DeleteCustomer([FromRoute] int id)
         {
-            if (_customerService.ExistCustomer(id))
+            if (await _customerService.ExistCustomer(id))
             {
-                _customerService.DeleteCustomer(id);
+                await _customerService.DeleteCustomer(id);
                 return Ok();
             }
             else
