@@ -9,12 +9,12 @@ namespace WebApi.Bussiness.Services.Interfaces
 {
     public interface ICustomerService
     {
-        List<Customer> GetAllCustomer();
-        Customer GetCustomerById(int customerId);
-        void InsertCustomer(Customer customer);
-        void UpdateCustomer(Customer customer);
-        Customer DeleteCustomer(int customerId);
+        IEnumerable<Customer> GetAllCustomer();
+        Task<Customer> GetCustomerById(int customerId);
+        Task<Customer> InsertCustomer(Customer customer);
+        Task<Customer> UpdateCustomer(Customer customer);
+        Task<Customer> DeleteCustomer(int customerId);
 
-        bool ExistCustomer(int customerId);
+        Task<bool> ExistCustomer(int customerId);
     }
 }
