@@ -19,7 +19,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCustomer()
+        public IActionResult GetAllCustomer()
         {
             return new ObjectResult(_customerService.GetAllCustomer());
         }
