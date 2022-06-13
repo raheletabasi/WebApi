@@ -51,7 +51,7 @@ namespace WebApi.Bussiness.Services
 
         public async Task<Customer> UpdateCustomer(Customer customer)
         {
-            _context.Entry(customer).State = EntityState.Modified;
+             _context.Entry(customer).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return customer;
         }
