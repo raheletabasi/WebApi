@@ -19,39 +19,41 @@ namespace WebApi.Bussiness.Services
             _context = context;
         }
 
-        public Customer DeleteCustomer(int customerId)
+        public async Task<Customer> DeleteCustomer(int customerId)
         {
-            var customer = _context.Customers.Find(customerId);
+            var customer = await _context.Customers.FindAsync(customerId);
             _context.Customers.Remove(customer);
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return customer;            
         }
 
-        public bool ExistCustomer(int customerId)
+        public async Task<bool> ExistCustomer(int customerId)
         {
-            return _context.Customers.Any(c => c.CustomerId == customerId);
+            return await _context.Customers.AnyAsync(c => c.CustomerId == customerId);
         }
 
-        public List<Customer> GetAllCustomer()
+        public IEnumerable<Customer> GetAllCustomer()
         {
             return _context.Customers.ToList();
         }
 
-        public Customer GetCustomerById(int customerId)
+        public async Task<Customer> GetCustomerById(int customerId)
         {
-            return _context.Customers.SingleOrDefault(c => c.CustomerId == customerId);
+            return await _context.Customers.Include(c => c.Order).SingleOrDefaultAsync(c => c.CustomerId == customerId);
         }
 
-        public void InsertCustomer(Customer customer)
+        public async Task<Customer> InsertCustomer(Customer customer)
         {
-            _context.Add(customer);
-            _context.SaveChangesAsync();
+            await _context.AddAsync(customer);
+            await _context.SaveChangesAsync();
+            return customer;
         }
 
-        public void UpdateCustomer(Customer customer)
+        public async Task<Customer> UpdateCustomer(Customer customer)
         {
             _context.Entry(customer).State = EntityState.Modified;
-            _context.SaveChangesAsync();    
+            await _context.SaveChangesAsync();
+            return customer;
         }
     }
 }
