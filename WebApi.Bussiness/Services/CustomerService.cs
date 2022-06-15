@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,12 @@ namespace WebApi.Bussiness.Services
     public class CustomerService : ICustomerService
     {
         WebApi_DBContext _context;
+        IMemoryCache _memoryCache;
 
-        public CustomerService(WebApi_DBContext context)
+        public CustomerService(WebApi_DBContext context, IMemoryCache memoryCache)
         {
             _context = context;
+            _memoryCache = memoryCache;
         }
 
         public async Task<Customer> DeleteCustomer(int customerId)
@@ -39,7 +42,18 @@ namespace WebApi.Bussiness.Services
 
         public async Task<Customer> GetCustomerById(int customerId)
         {
-            return await _context.Customers.Include(c => c.Order).SingleOrDefaultAsync(c => c.CustomerId == customerId);
+            var cacheCustomer = _memoryCache.Get<Customer>(customerId);
+            if (cacheCustomer != null)
+                return cacheCustomer;
+            else
+            {
+                var customer = await _context.Customers.Include(c => c.Order).SingleOrDefaultAsync(c => c.CustomerId == customerId);
+                var cacheOption = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromSeconds(60));
+
+                _memoryCache.Set(customerId, customer, cacheOption);
+                return customer;
+            }
         }
 
         public async Task<Customer> InsertCustomer(Customer customer)

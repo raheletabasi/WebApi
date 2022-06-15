@@ -19,6 +19,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
+        [ResponseCache(Duration = 60)]
         public IActionResult GetAllCustomer()
         {
             return new ObjectResult(_customerService.GetAllCustomer());
