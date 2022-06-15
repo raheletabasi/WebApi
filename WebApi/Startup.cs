@@ -46,6 +46,11 @@ namespace WebApi
             services.AddTransient<ICustomerService, CustomerService>();
             #endregion
 
+            #region Caching
+            services.AddResponseCaching();
+            services.AddMemoryCache();
+            #endregion
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,6 +66,8 @@ namespace WebApi
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseResponseCaching();
 
             app.UseEndpoints(endpoints =>
             {
